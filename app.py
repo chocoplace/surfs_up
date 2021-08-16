@@ -34,15 +34,16 @@ app = Flask(__name__)
 #Welcome route 
 @app.route('/')
 def welcome():
-    return('''
-    Welcome to the Climate Analysis API!
-    Available Routes:
-    /api/v1.0/precipitation
-    /api/v1.0/stations
-    /api/v1.0/tobs
-    /api/v1.0/temp/start/end
-    ''')
+    return(
+    f"Welcome to the Climate Analysis API!<br/>"
+    f"Available Routes:<br/>"
+    f"/api/v1.0/precipitation<br/>"
+    f"/api/v1.0/stations<br/>"
+    f"/api/v1.0/tobs<br/>"
+    f"/api/v1.0/temp/start/end"
+ )
 
+###################################
 #Precipitation Route
 @app.route("/api/v1.0/precipitation")
 def precipitation():
@@ -52,6 +53,7 @@ def precipitation():
    precip = {date: prcp for date, prcp in precipitation}
    return jsonify(precip)
 
+###################################
 #Satation Route
 @app.route("/api/v1.0/stations")
 def stations():
@@ -59,6 +61,7 @@ def stations():
     stations = list(np.ravel(results))
     return jsonify(stations=stations)
 
+###################################
 #Monthly Temprerature Route 
 @app.route("/api/v1.0/tobs")
 def temp_monthly():
@@ -69,6 +72,7 @@ def temp_monthly():
     temps = list(np.ravel(results))
     return jsonify(temps=temps)
 
+###################################
 #Statistics Route 
 @app.route("/api/v1.0/temp/<start>")
 @app.route("/api/v1.0/temp/<start>/<end>")
@@ -77,6 +81,7 @@ def stats(start=None, end=None):
 
     if not end:
         results = session.query(*sel).\
+            filter(Measurement.date >= start).\
             filter(Measurement.date >= start).all()
         temps = list(np.ravel(results))
         return jsonify(temps)
@@ -85,6 +90,7 @@ def stats(start=None, end=None):
         filter(Measurement.date >= start).\
         filter(Measurement.date <= end).all()
     temps = list(np.ravel(results))
-    return jsonify(temps)
+    return jsonify(temps=temps)
 
+###################################
     
